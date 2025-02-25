@@ -27,8 +27,8 @@ RUN DEBIAN_FRONTEND=noninteractive \
         libtool
 
 # Python and poetry installation
-USER $USER
-ARG HOME="/home/$USER"
+USER vscode
+ARG HOME="/home/vscode"
 # ARG PYTHON_VERSION=${templateOption:pythonVersion}
 ARG PYTHON_VERSION=3.10
 
