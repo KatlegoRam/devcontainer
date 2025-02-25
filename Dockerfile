@@ -35,12 +35,5 @@ ARG PYTHON_VERSION=3.10
 ENV PYENV_ROOT="${HOME}/.pyenv"
 ENV PATH="${PYENV_ROOT}/shims:${PYENV_ROOT}/bin:${HOME}/.local/bin:$PATH"
 
-RUN echo "done 0000" \
-    && curl -k https://pyenv.run | bash \
-    && echo "done 1" \
-    && pyenv install ${PYTHON_VERSION} \
-    && echo "done 2" \
-    && pyenv global ${PYTHON_VERSION} \
-    && echo "done 3" \
-    && curl -k -sSL https://install.python-poetry.org | python3 - \
-    && echo "done 4" 
+RUN curl https://pyenv.run | bash \
+    && curl -sSL https://install.python-poetry.org | python3 - \
