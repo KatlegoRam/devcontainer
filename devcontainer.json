@@ -1,29 +1,36 @@
 {
-	"name": "poetry3-poetry-pyenv",
-	"build": {
-		"dockerfile": "Dockerfile"
-	},
+    "name": "Data Science Environment",
+    "build": {
+        "dockerfile": "Dockerfile"
+    },
 
-	// 👇 Features to add to the Dev Container. More info: https://containers.dev/implementors/features.
-	// "features": {},
+    "features": {
+        "ghcr.io/devcontainers/features/github-cli:1": {}
+    },
 
-	// 👇 Use 'forwardPorts' to make a list of ports inside the container available locally.
-	// "forwardPorts": [],
+    "forwardPorts": [8888],
+    "postCreateCommand": "poetry install",
 
-	// 👇 Use 'postCreateCommand' to run commands after the container is created.
-	// "postCreateCommand": "",
-
-	// 👇 Configure tool-specific properties.
-	"customizations": {
+    "customizations": {
         "vscode": {
-            "extensions":[
-                "donjayamanne.python-extension-pack",
+            "extensions": [
+                // Core Python & data science
+                "ms-python.python",
+                "ms-python.vscode-pylance",
                 "ms-toolsai.jupyter",
-                "github.copilot"
-            ]
+                "ms-toolsai.jupyter-renderers",
+                
+                // Development tools
+                "github.copilot",
+                "ms-python.black-formatter",
+                "njpwerner.autodocstring",
+                "eamodio.gitlens"
+            ],
+            "settings": {
+                "python.formatting.provider": "black",
+                "editor.formatOnSave": true,
+                "python.linting.enabled": true
             }
         }
-
-	// 👇 Uncomment to connect as root instead. More info: https://aka.ms/dev-containers-non-root.
-	// "remoteUser": "root"
+    }
 }

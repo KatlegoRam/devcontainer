@@ -1,39 +1,30 @@
 FROM mcr.microsoft.com/devcontainers/python:3.10
-# FROM mcr.microsoft.com/devcontainers/base:jammy 
 
 ARG DEBIAN_FRONTEND=noninteractive
-ARG USER=vscode
 
-RUN DEBIAN_FRONTEND=noninteractive \
-    && apt-get update \ 
-    && apt-get install -y build-essential --no-install-recommends make \
-        ca-certificates \
-        git \
-        libssl-dev \
-        zlib1g-dev \
-        libbz2-dev \
-        libreadline-dev \
-        libsqlite3-dev \
-        wget \
-        curl \
-        llvm \
-        libncurses5-dev \
-        xz-utils \
-        tk-dev \
-        libxml2-dev \
-        libxmlsec1-dev \
-        libffi-dev \
-        liblzma-dev \
-        libtool
+# Install system dependencies (removed duplicates from base image)
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    # Data science specific dependencies
+    libblas-dev \
+    liblapack-dev \
+    libatlas-base-dev \
+    gfortran \
+    graphviz \
+    gdal-bin \
+    libgdal-dev \
+    poppler-utils \
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/*
 
-# Python and poetry installation
+# Switch to vscode user
 USER vscode
 ARG HOME="/home/vscode"
-# ARG PYTHON_VERSION=${templateOption:pythonVersion}
-ARG PYTHON_VERSION=3.10
 
-ENV PYENV_ROOT="${HOME}/.pyenv"
-ENV PATH="${PYENV_ROOT}/shims:${PYENV_ROOT}/bin:${HOME}/.local/bin:$PATH"
+# Install poetry (Python is already in base image)
+RUN curl -sSL https://install.python-poetry.org | python3 - \
+    && poetry config virtualenvs.in-project true
 
-RUN curl https://pyenv.run | bash \
-    && curl -sSL https://install.python-poetry.org | python3 - \
+# Set up Jupyter for easier access
+RUN mkdir -p ${HOME}/.jupyter \
+    && echo "c.NotebookApp.ip = '0.0.0.0'" > ${HOME}/.jupyter/jupyter_notebook_config.py \
+    && echo "c.NotebookApp.token = ''" >> ${HOME}/.jupyter/jupyter_notebook_config.py
