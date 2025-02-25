@@ -1,6 +1,7 @@
 FROM mcr.microsoft.com/devcontainers/python:3.10
 
 ARG DEBIAN_FRONTEND=noninteractive
+ARG USER=vscode
 
 # Install system dependencies (removed duplicates from base image)
 RUN apt-get update && apt-get install -y --no-install-recommends \
