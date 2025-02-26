@@ -2,7 +2,7 @@ FROM mcr.microsoft.com/devcontainers/python:3.10
 
 ARG DEBIAN_FRONTEND=noninteractive
 
-# Install system dependencies
+# Install system dependencies (removed duplicates from base image)
 RUN apt-get update && apt-get install -y --no-install-recommends \
     # Data science specific dependencies
     libblas-dev \
@@ -16,11 +16,20 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
+# Check if vscode user exists, if not create it
+RUN if ! id -u vscode >/dev/null 2>&1; then \
+        useradd -m -s /bin/bash vscode; \
+    fi
+
+# Switch to vscode user
+USER vscode
+ARG HOME="/home/vscode"
+
 # Install poetry (Python is already in base image)
 RUN curl -sSL https://install.python-poetry.org | python3 - \
     && poetry config virtualenvs.in-project true
 
 # Set up Jupyter for easier access
-RUN mkdir -p /root/.jupyter \
-    && echo "c.NotebookApp.ip = '0.0.0.0'" > /root/.jupyter/jupyter_notebook_config.py \
-    && echo "c.NotebookApp.token = ''" >> /root/.jupyter/jupyter_notebook_config.py
+RUN mkdir -p ${HOME}/.jupyter \
+    && echo "c.NotebookApp.ip = '0.0.0.0'" > ${HOME}/.jupyter/jupyter_notebook_config.py \
+    && echo "c.NotebookApp.token = ''" >> ${HOME}/.jupyter/jupyter_notebook_config.py
