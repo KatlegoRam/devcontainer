@@ -27,6 +27,7 @@ ARG HOME="/home/vscode"
 
 # Install poetry (Python is already in base image)
 RUN curl -sSL https://install.python-poetry.org | python3 - \
+    && export PATH="/home/vscode/.local/bin:$PATH" \
     && poetry config virtualenvs.in-project true
 
 # Set up Jupyter for easier access
